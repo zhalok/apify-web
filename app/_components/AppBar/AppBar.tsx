@@ -95,7 +95,7 @@ export default function Appbar({ setOpenAddNew }: { setOpenAddNew: Function }) {
             marginLeft: "auto",
           }}
         >
-          {item.label === "Notifications" && (
+          {item.label === "Notifications" && loggedIn && (
             <Pill>{notifications.length}</Pill>
           )}
         </span>

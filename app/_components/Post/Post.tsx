@@ -10,6 +10,7 @@ import {
   TextInput,
   Flex,
   Loader,
+  Indicator,
 } from "@mantine/core";
 import Comments from "../Comments/Comments";
 import { useContext, useEffect, useState } from "react";
@@ -50,8 +51,11 @@ function Post({ id, username, text, image, userId, getPosts }: any) {
   // console.log(isReacted);
   const getReactions = () => {
     axios.get("/reactions/" + id).then((res) => {
-      // console.log(res.data.reactions);
-      setReactions(res.data.reactions);
+      // console.log(res.data.reactions)
+      // @ts-ignore
+      setReactions((prev) => {
+        return [...res.data.reactions];
+      });
     });
   };
 
@@ -70,8 +74,8 @@ function Post({ id, username, text, image, userId, getPosts }: any) {
       )
       .then((res) => {
         console.log(res.data);
-        setIsReacted(true);
-        // getReactions();
+        // setIsReacted(true);
+        getReactions();
       })
       .catch((e) => {
         console.log(e);
@@ -86,7 +90,8 @@ function Post({ id, username, text, image, userId, getPosts }: any) {
         },
       })
       .then((res) => {
-        setIsReacted(false);
+        // setIsReacted(false);
+        getReactions();
       })
       .catch((e) => {
         // console.log()
@@ -143,6 +148,7 @@ function Post({ id, username, text, image, userId, getPosts }: any) {
   }, []);
 
   useEffect(() => {
+    setIsReacted(false);
     if (user && reactions.map((e) => e?.user?._id).includes(user.user)) {
       setIsReacted(true);
       // console.log("hello");
@@ -243,17 +249,21 @@ function Post({ id, username, text, image, userId, getPosts }: any) {
           }}
         >
           {isReacted ? (
-            <IconHeartFilled
-              onClick={() => {
-                removeReaction();
-              }}
-            />
+            <Indicator label={reactions.length} size={16}>
+              <IconHeartFilled
+                onClick={() => {
+                  removeReaction();
+                }}
+              />
+            </Indicator>
           ) : (
-            <IconHeartPlus
-              onClick={() => {
-                addReaction();
-              }}
-            />
+            <Indicator label={reactions.length} size={16}>
+              <IconHeartPlus
+                onClick={() => {
+                  addReaction();
+                }}
+              />
+            </Indicator>
           )}
         </Group>
       )}
