@@ -52,8 +52,10 @@ export default function Comments({ postId }: { postId: any }) {
           <Accordion.Control>{"Comments"}</Accordion.Control>
           <Accordion.Panel>
             {user && <CommentBox getComments={getComments} postId={postId} />}
-            {comments.map((e) => {
-              return <Comment comment={e} getComments={getComments} />;
+            {comments.map((e, index) => {
+              return (
+                <Comment key={index} comment={e} getComments={getComments} />
+              );
             })}
           </Accordion.Panel>
         </Accordion.Item>

@@ -26,8 +26,8 @@ export default function Notifications() {
   }, []);
   return (
     <div>
-      {notifications.map((e) => {
-        return <Notification notification={e} />;
+      {notifications.map((e, index) => {
+        return <Notification key={index} notification={e} />;
       })}
     </div>
   );

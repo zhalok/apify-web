@@ -42,7 +42,7 @@ function Post({ id, username, text, image, userId, getPosts }: any) {
   const [updateText, setUpdateText] = useState(false);
   const [updating, setUpdating] = useState(false);
   const [postText, setPostText] = useState(text);
-
+  // @ts-ignore
   const { user } = useContext(AuthContext);
   // console.log(user.user);
   // console.log(reactions.map((e) => e?.user?._id));
@@ -149,6 +149,7 @@ function Post({ id, username, text, image, userId, getPosts }: any) {
 
   useEffect(() => {
     setIsReacted(false);
+    // @ts-ignore
     if (user && reactions.map((e) => e?.user?._id).includes(user.user)) {
       setIsReacted(true);
       // console.log("hello");

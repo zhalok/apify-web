@@ -52,6 +52,7 @@ export default function RootLayout({
             }}
           >
             <AuthContext.Provider
+              // @ts-ignore
               value={{
                 user,
                 setUser,

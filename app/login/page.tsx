@@ -31,6 +31,7 @@ export default function Login() {
       // router.refresh();
     } catch (e) {
       //   console.log(e?.response?.data?.statusCode);
+      // @ts-ignore
       if (e?.response?.data?.statusCode === 401) {
         setError("Invalid credentials");
       }

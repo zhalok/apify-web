@@ -1,4 +1,5 @@
 "use client";
+/* eslint-disable */
 import axios from "@/utils/axios";
 import { Flex } from "@mantine/core";
 import { useContext, useEffect, useState } from "react";
@@ -8,6 +9,7 @@ import ReRenderContext from "../_contexts/ReRenderContext";
 export default function Feed() {
   const [posts, setPosts] = useState([]);
   const [postsLoading, setPostsLoading] = useState(false);
+  // @ts-ignore
   const { reRenderer } = useContext(ReRenderContext);
 
   const getPosts = async () => {
@@ -58,14 +60,19 @@ export default function Feed() {
           padding: "20px",
         }}
       >
-        {posts.map((post) => {
+        {posts.map((post, index) => {
           return (
-            <div>
+            <div key={index}>
               <Post
+                // @ts-ignore
                 id={post?._id}
+                // @ts-ignore
                 username={post?.user?.username}
+                // @ts-ignore
                 image={post?.image}
+                // @ts-ignore
                 text={post?.text}
+                // @ts-ignore
                 userId={post?.user?._id}
                 getPosts={getPosts}
               />
