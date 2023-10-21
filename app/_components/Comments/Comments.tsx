@@ -13,16 +13,19 @@ import {
   TextInput,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Comment from "./Comment";
 import axios from "@/utils/axios";
 import { toast } from "react-toastify";
 import CommentBox from "./CommentBos";
+import AuthContext from "@/app/_contexts/AuthContext";
 
 export default function Comments({ postId }) {
   const [comments, setComments] = useState([]);
 
   const [opened, { toggle }] = useDisclosure(false);
+
+  const { user } = useContext(AuthContext);
 
   const getComments = async () => {
     axios
@@ -32,10 +35,8 @@ export default function Comments({ postId }) {
         setComments(res.data.comments);
       })
       .catch((e) => {
-        // toast.error("Error getting comments");
         console.log(e);
       });
-    // console.log(response.data.comments);
   };
 
   useEffect(() => {
@@ -57,9 +58,9 @@ export default function Comments({ postId }) {
         <Accordion.Item key={1} value={"Comments"}>
           <Accordion.Control>{"Comments"}</Accordion.Control>
           <Accordion.Panel>
-            <CommentBox getComments={getComments} postId={postId} />
+            {user && <CommentBox getComments={getComments} postId={postId} />}
             {comments.map((e) => {
-              return <Comment comment={e} />;
+              return <Comment comment={e} getComments={getComments} />;
             })}
           </Accordion.Panel>
         </Accordion.Item>

@@ -12,7 +12,7 @@ import {
   TextInput,
   Textarea,
 } from "@mantine/core";
-import { useState } from "react";
+import { useContext, useState } from "react";
 // @ts-ignore
 import { v4 as uuidv4 } from "uuid";
 import { IconPhoto } from "@tabler/icons-react";
@@ -23,6 +23,7 @@ import { ToastContainer, toast } from "react-toastify";
 import Cookies from "js-cookie";
 import { IconX, IconCheck } from "@tabler/icons-react";
 import { set } from "firebase/database";
+import ReRenderContext from "@/app/_contexts/ReRenderContext";
 
 interface Props {
   opened: boolean;
@@ -41,6 +42,9 @@ function CreateNewPost({ opened, close }: Props) {
     icon: "",
   });
 
+  // @ts-ignore
+  const { setReRenderer } = useContext(ReRenderContext);
+
   const uploadImage = async (image: any) => {
     const storageRef = ref(storage, `posts/${uuidv4()}`);
     await uploadBytes(storageRef, image);
@@ -57,7 +61,7 @@ function CreateNewPost({ opened, close }: Props) {
     }
     setUploading(true);
     try {
-      const url = await uploadImage(photo);
+      const url = photo ? await uploadImage(photo) : null;
       const response = await axios.post(
         "/posts",
         {
@@ -71,8 +75,14 @@ function CreateNewPost({ opened, close }: Props) {
         }
       );
       toast.success("Post added successfully");
+
+      setReRenderer({});
+      setUploading(false);
+      // set
+      setText("");
+      setPhoto(null);
       close();
-      console.log(response.data);
+      // console.log(response.data);
     } catch (e) {
       console.log(e);
       setUploading(false);

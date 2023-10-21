@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Group, Code } from "@mantine/core";
+import { Group, Code, Pill } from "@mantine/core";
 import Cookies from "js-cookie";
 
 import {
@@ -12,12 +12,14 @@ import {
 // import { MantineLogo } from "@mantine/ds";
 import classes from "./Appbar.module.css";
 import { useRouter } from "next/navigation";
+import axios from "@/utils/axios";
 // import { cookies } from "next/headers";
 
 export default function Appbar({ setOpenAddNew }: { setOpenAddNew: Function }) {
   const router = useRouter();
   const [active, setActive] = useState("Billing");
   const [loggedIn, setLoggedIn] = useState(false);
+  const [notifications, setNotifications] = useState([]);
   // const router = useRouter();
 
   // console.log("jwt", jwt);
@@ -25,15 +27,37 @@ export default function Appbar({ setOpenAddNew }: { setOpenAddNew: Function }) {
   const data = [
     { route: "/feed", label: "News Feed", icon: IconArticle },
     {
-      // route: "/new-post",
       label: "Add New Post",
       icon: IconNewSection,
       onclickEvent: () => {
         setOpenAddNew(true);
       },
     },
-    { route: "/notifications", label: "Notifications", icon: IconBellRinging },
+    {
+      route: "/notifications",
+      label: "Notifications",
+      icon: IconBellRinging,
+    },
   ];
+
+  const getNotifications = async () => {
+    axios
+      .get("/notifications/", {
+        headers: {
+          Authorization: "Bearer " + Cookies.get("jwt"),
+        },
+      })
+      .then((res) => {
+        setNotifications(res.data.notifications);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
+  useEffect(() => {
+    getNotifications();
+  }, []);
 
   useEffect(() => {
     const jwt = Cookies.get("jwt");
@@ -44,6 +68,7 @@ export default function Appbar({ setOpenAddNew }: { setOpenAddNew: Function }) {
 
   const links = data.map((item, index) => {
     if (!loggedIn && item.label === "Add New Post") return null;
+    // if(item.label === "Notifications") return
     return (
       <div
         className={classes.link}
@@ -65,6 +90,15 @@ export default function Appbar({ setOpenAddNew }: { setOpenAddNew: Function }) {
       >
         <item.icon className={classes.linkIcon} stroke={1.5} />
         <span>{item.label}</span>
+        <span
+          style={{
+            marginLeft: "auto",
+          }}
+        >
+          {item.label === "Notifications" && (
+            <Pill>{notifications.length}</Pill>
+          )}
+        </span>
       </div>
     );
   });

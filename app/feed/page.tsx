@@ -1,12 +1,15 @@
 "use client";
 import axios from "@/utils/axios";
 import { Flex } from "@mantine/core";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Post from "../_components/Post/Post";
+import ReRenderContext from "../_contexts/ReRenderContext";
 
 export default function Feed() {
   const [posts, setPosts] = useState([]);
   const [postsLoading, setPostsLoading] = useState(false);
+  const { reRenderer } = useContext(ReRenderContext);
+
   const getPosts = async () => {
     setPostsLoading(true);
     axios
@@ -22,10 +25,11 @@ export default function Feed() {
         console.log("finally executing");
       });
   };
+  console.log(posts);
 
   useEffect(() => {
     getPosts();
-  }, []);
+  }, [reRenderer]);
 
   // useEffect(getPosts,[])
 
@@ -44,11 +48,10 @@ export default function Feed() {
         style={{
           display: "flex",
           flexDirection: "column",
-          // width: "100%",
-          // width: "70%",
+
           width: "100%",
           height: "100vh",
-          // overflowY: "scroll",
+
           rowGap: "20px",
           marginLeft: "auto",
           marginRight: "auto",
@@ -60,9 +63,11 @@ export default function Feed() {
             <div>
               <Post
                 id={post?._id}
-                user={post?.user?.username}
+                username={post?.user?.username}
                 image={post?.image}
                 text={post?.text}
+                userId={post?.user?._id}
+                getPosts={getPosts}
               />
             </div>
           );
