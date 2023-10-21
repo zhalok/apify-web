@@ -7,6 +7,8 @@ import { MantineProvider, ColorSchemeScript } from "@mantine/core";
 import Appbar from "./_components/AppBar/AppBar";
 
 import Cookies from "js-cookie";
+import CreateNewPost from "./_components/Modals/NewPostModal";
+import { useState } from "react";
 
 // export const metadata: Metadata = {
 //   title: "Create Next App",
@@ -21,6 +23,7 @@ export default function RootLayout({
   // console.log("hello");
   // const jwt = Cookies.get("jwt");
   // console.log("jwt", jwt);
+  const [openAddNew, setOpenAddNew] = useState(false);
   return (
     <html lang="en">
       <head>{/* <ColorSchemeScript /> */}</head>
@@ -32,7 +35,13 @@ export default function RootLayout({
               flexDirection: "row",
             }}
           >
-            <Appbar />
+            <Appbar setOpenAddNew={setOpenAddNew} />
+            <CreateNewPost
+              opened={openAddNew}
+              close={() => {
+                setOpenAddNew(false);
+              }}
+            />
             <div className="children">{children}</div>
           </div>
         </MantineProvider>
