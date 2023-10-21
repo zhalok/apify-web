@@ -41,8 +41,10 @@ export default function Login() {
       window.location.reload();
     } catch (e) {
       //   console.log(e?.response?.data?.statusCode);
+      // @ts-ignore
       if (e?.response?.data?.statusCode === 401) {
         // setError("Invalid credentials");
+        // @ts-ignore
         // toast.error("Invalid credentials");
         toast(e?.response?.data?.message);
         // console.log(e);

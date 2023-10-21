@@ -36,8 +36,8 @@ export default function Replies({ comment }: { comment: any }) {
               {user && (
                 <ReplyBox getReplies={getReplies} commentId={comment?._id} />
               )}
-              {replies.map((e) => {
-                return <Reply reply={e} getReplies={getReplies} />;
+              {replies.map((e, index) => {
+                return <Reply key={index} reply={e} getReplies={getReplies} />;
               })}
             </Accordion.Panel>
           </Accordion.Item>
