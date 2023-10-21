@@ -5,6 +5,7 @@
    */
   height: 100vh;
   position: relative;
+
   width: rem(300px);
   padding: var(--mantine-spacing-md);
   display: flex;

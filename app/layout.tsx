@@ -7,6 +7,13 @@ import { MantineProvider, ColorSchemeScript } from "@mantine/core";
 import Appbar from "./_components/AppBar/AppBar";
 
 import Cookies from "js-cookie";
+import CreateNewPost from "./_components/Modals/NewPostModal";
+import { useEffect, useState } from "react";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import AuthContext from "./_contexts/AuthContext";
+import jwtDecode from "jwt-decode";
+import ReRenderContext from "./_contexts/ReRenderContext";
 
 // export const metadata: Metadata = {
 //   title: "Create Next App",
@@ -21,10 +28,22 @@ export default function RootLayout({
   // console.log("hello");
   // const jwt = Cookies.get("jwt");
   // console.log("jwt", jwt);
+  const [openAddNew, setOpenAddNew] = useState(false);
+  const [user, setUser] = useState(null);
+  const [reRenderer, setReRenderer] = useState({});
+  useEffect(() => {
+    const token = Cookies.get("jwt");
+    if (token) {
+      setUser(jwtDecode(token));
+    }
+  }, []);
   return (
     <html lang="en">
-      <head>{/* <ColorSchemeScript /> */}</head>
+      <head>
+        <title>ApifyBook</title>
+      </head>
       <body>
+        <ToastContainer />
         <MantineProvider>
           <div
             style={{
@@ -32,8 +51,23 @@ export default function RootLayout({
               flexDirection: "row",
             }}
           >
-            <Appbar />
-            <div className="children">{children}</div>
+            <AuthContext.Provider
+              value={{
+                user,
+                setUser,
+              }}
+            >
+              <ReRenderContext.Provider value={{ reRenderer, setReRenderer }}>
+                <Appbar setOpenAddNew={setOpenAddNew} />
+                <CreateNewPost
+                  opened={openAddNew}
+                  close={() => {
+                    setOpenAddNew(false);
+                  }}
+                />
+                <div className="children">{children}</div>
+              </ReRenderContext.Provider>{" "}
+            </AuthContext.Provider>
           </div>
         </MantineProvider>
       </body>

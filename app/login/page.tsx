@@ -27,8 +27,8 @@ export default function Login() {
       //   console.log("response", response);
       const token = response.data.token;
       Cookies.set("jwt", token);
-      //   window.location.reload();
-      router.refresh();
+      window.location.reload();
+      // router.refresh();
     } catch (e) {
       //   console.log(e?.response?.data?.statusCode);
       if (e?.response?.data?.statusCode === 401) {

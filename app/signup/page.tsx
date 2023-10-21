@@ -44,8 +44,8 @@ export default function Login() {
       if (e?.response?.data?.statusCode === 401) {
         // setError("Invalid credentials");
         // toast.error("Invalid credentials");
-        // toast(e?.response?.data?.message);
-        console.log(e);
+        toast(e?.response?.data?.message);
+        // console.log(e);
       }
       setSignupLoading(false);
     }
