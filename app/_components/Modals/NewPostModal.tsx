@@ -5,7 +5,9 @@ import {
   FileInput,
   Flex,
   Group,
+  Loader,
   Modal,
+  Notification,
   Text,
   TextInput,
   Textarea,
@@ -17,6 +19,10 @@ import { IconPhoto } from "@tabler/icons-react";
 import axios from "@/utils/axios";
 import storage from "@/utils/firebaseConfig";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { ToastContainer, toast } from "react-toastify";
+import Cookies from "js-cookie";
+import { IconX, IconCheck } from "@tabler/icons-react";
+import { set } from "firebase/database";
 
 interface Props {
   opened: boolean;
@@ -26,6 +32,14 @@ interface Props {
 function CreateNewPost({ opened, close }: Props) {
   const [text, setText] = useState("");
   const [photo, setPhoto] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [notification, setNotification] = useState({
+    message: "",
+    show: false,
+    color: "",
+    tittle: "",
+    icon: "",
+  });
 
   const uploadImage = async (image: any) => {
     const storageRef = ref(storage, `posts/${uuidv4()}`);
@@ -34,53 +48,78 @@ function CreateNewPost({ opened, close }: Props) {
     return url;
   };
 
-  const addNewPost = async () => {
-    const uid = uuidv4();
-    console.log(uid);
-    // console.log(uid);
-    // console.log(photo);
-    // const storageRef = ref(storage, `posts/${uid}`);
-    const url = await uploadImage(photo);
-    console.log(url);
-    // await uploadBytes(storageRef, photo as Blob);
+  const addNewPost = async (e: any) => {
+    e.preventDefault();
+    if (!text) {
+      toast.error("Please write something");
+
+      return;
+    }
+    setUploading(true);
+    try {
+      const url = await uploadImage(photo);
+      const response = await axios.post(
+        "/posts",
+        {
+          text,
+          image: url,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${Cookies.get("jwt")}`,
+          },
+        }
+      );
+      toast.success("Post added successfully");
+      close();
+      console.log(response.data);
+    } catch (e) {
+      console.log(e);
+      setUploading(false);
+    }
   };
 
   return (
     <Modal opened={opened} onClose={close} title="Add a new Post" centered>
-      <Flex direction={"column"} wrap={"wrap"} gap={"md"}>
-        <Textarea
-          placeholder="Please write your thoughts"
-          label="What's in your mind?"
-          autosize
-          minRows={2}
-          size="xl"
-          value={text}
-          onChange={(event) => {
-            setText(event.currentTarget.value);
-          }}
-        />
+      {/* <ToastContainer /> */}
 
-        <Group justify="center">
-          <FileButton onChange={setPhoto} accept="image/png,image/jpeg">
-            {(props) => (
-              <Button
-                {...props}
-                fullWidth
-                leftSection={!photo && <IconPhoto />}
-                variant="default"
-              >
-                {photo?.name ? photo?.name : "Pick a photo"}
-              </Button>
-            )}
-          </FileButton>
-        </Group>
+      <form onSubmit={addNewPost}>
+        <Flex direction={"column"} wrap={"wrap"} gap={"md"}>
+          <Textarea
+            required
+            placeholder="Please write your thoughts"
+            label="What's in your mind?"
+            autosize
+            minRows={2}
+            size="xl"
+            value={text}
+            onChange={(event) => {
+              setText(event.currentTarget.value);
+            }}
+          />
 
-        <Group justify="center">
-          <Button fullWidth onClick={addNewPost}>
-            Post
-          </Button>
-        </Group>
-      </Flex>
+          <Group justify="center">
+            <FileButton onChange={setPhoto} accept="image/png,image/jpeg">
+              {(props) => (
+                <Button
+                  {...props}
+                  fullWidth
+                  leftSection={!photo && <IconPhoto />}
+                  variant="default"
+                >
+                  {photo?.name ? photo?.name : "Pick a photo"}
+                </Button>
+              )}
+            </FileButton>
+          </Group>
+
+          <Group justify="center">
+            <Button fullWidth onClick={addNewPost}>
+              {uploading ? <Loader /> : "Post"}
+            </Button>
+          </Group>
+        </Flex>
+      </form>
     </Modal>
   );
 }

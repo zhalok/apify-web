@@ -9,6 +9,8 @@ import Appbar from "./_components/AppBar/AppBar";
 import Cookies from "js-cookie";
 import CreateNewPost from "./_components/Modals/NewPostModal";
 import { useState } from "react";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // export const metadata: Metadata = {
 //   title: "Create Next App",
@@ -28,6 +30,7 @@ export default function RootLayout({
     <html lang="en">
       <head>{/* <ColorSchemeScript /> */}</head>
       <body>
+        <ToastContainer />
         <MantineProvider>
           <div
             style={{
