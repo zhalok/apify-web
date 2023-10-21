@@ -20,6 +20,7 @@ export default function Notifications() {
         console.log(e);
       });
   };
+
   useEffect(() => {
     getNotifications();
   }, []);

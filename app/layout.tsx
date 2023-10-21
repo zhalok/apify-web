@@ -39,7 +39,9 @@ export default function RootLayout({
   }, []);
   return (
     <html lang="en">
-      <head>{/* <ColorSchemeScript /> */}</head>
+      <head>
+        <title>ApifyBook</title>
+      </head>
       <body>
         <ToastContainer />
         <MantineProvider>
