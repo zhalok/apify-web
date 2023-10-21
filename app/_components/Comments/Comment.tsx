@@ -16,6 +16,7 @@ import axios from "@/utils/axios";
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
 import { IconPencilCheck } from "@tabler/icons-react";
+import Replies from "../Replies/Replies";
 // import Cookies from "js-cookie";
 // import { set } from "firebase/database";
 
@@ -140,6 +141,7 @@ export default function Comment({
           </Flex>
         )}
       </Flex>
+      <Replies comment={comment} />
     </Card>
   );
 }
